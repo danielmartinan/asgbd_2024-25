@@ -107,6 +107,12 @@
   - [6.8. Buenas Prácticas con Cursores](#68-buenas-prácticas-con-cursores)
 - [7. Documentación en MySQL: Procedimientos, Eventos, Handlers y Cursores](#7-documentación-en-mysql-procedimientos-eventos-handlers-y-cursores)
 - [8. Recursos adicionales](#8-recursos-adicionales)
+- [9. Anexo: tablas temporales en MySQL](#9-anexo-tablas-temporales-en-mysql)
+  - [9.1. Creación de tablas temporales](#91-creación-de-tablas-temporales)
+  - [9.2. Manipulación de datos en tablas temporales](#92-manipulación-de-datos-en-tablas-temporales)
+  - [9.3. Eliminación de tablas temporales](#93-eliminación-de-tablas-temporales)
+  - [9.4. Diferencias entre tablas temporales y tablas normales](#94-diferencias-entre-tablas-temporales-y-tablas-normales)
+  - [9.5. Casos de uso de tablas temporales](#95-casos-de-uso-de-tablas-temporales)
 
 ## 1. Introducción: La Importancia de las Rutinas en la Automatización de Tareas
 
@@ -2674,6 +2680,8 @@ Recordamos que para utilizar el procedimiento definido en el ejemplo anterior, e
 CALL actualizar_salarios_departamento('IT');
 ```
 
+Nota :bulb: : Puedes encontrar más información sobre las tablas temporales en el [anexo](#anexo) al final de este documento.
+
 #### 6.4.1. Puntos Importantes a Recordar
 
 1. **Orden de Declaración**: Las variables deben declararse antes que el cursor, y el manejador de eventos después del cursor.  
@@ -3109,3 +3117,82 @@ A continuación se incluyen algunos recursos adicionales de interes:
 - [Documentación oficial de Mysql sobre eventos](https://dev.mysql.com/doc/refman/8.0/en/event-scheduler.html)
 - [Documentación oficial de Mysql sobre handlers](https://dev.mysql.com/doc/refman/8.0/en/condition-handling.html)
 - [Ejercicios resueltos de gonzaleztroyano - github](https://github.com/gonzaleztroyano/ASIR2-ASGBD-Examples)
+
+## 9. Anexo: tablas temporales en MySQL
+
+Las **tablas temporales** (`TEMPORARY TABLES`) en MySQL permiten almacenar datos de manera transitoria dentro de una sesión. Son útiles para manipular datos intermedios sin afectar las tablas reales de la base de datos.  
+
+Cuando se crea una tabla temporal, **solo es accesible en la sesión actual** y se elimina automáticamente cuando la sesión se cierra o cuando se ejecuta `DROP TEMPORARY TABLE`.  
+
+### 9.1. Creación de tablas temporales
+
+**Sintaxis básica:**
+
+```sql
+CREATE TEMPORARY TABLE nombre_tabla (
+    columna1 INT,
+    columna2 VARCHAR(100)
+);
+```
+
+**Ejemplo de uso:**
+
+```sql
+CREATE TEMPORARY TABLE temp_clientes AS 
+SELECT id, nombre, ciudad FROM clientes WHERE ciudad = 'Madrid';
+```
+
+🔹 **Explicación:** Se crea una tabla temporal `temp_clientes` con los clientes de Madrid.  
+
+### 9.2. Manipulación de datos en tablas temporales
+
+Las tablas temporales se utilizan de la misma manera que las tablas normales. Puedes insertar, actualizar, eliminar y consultar datos en ellas.
+
+**Insertar datos manualmente:**  
+```sql
+INSERT INTO temp_clientes (id, nombre, ciudad) VALUES (1001, 'Carlos Pérez', 'Madrid');
+```
+
+**Actualizar registros:**  
+```sql
+UPDATE temp_clientes SET ciudad = 'Barcelona' WHERE id = 1001;
+```
+
+**Eliminar registros:**  
+```sql
+DELETE FROM temp_clientes WHERE ciudad = 'Madrid';
+```
+
+**Consultar datos en la tabla temporal:**  
+```sql
+SELECT * FROM temp_clientes;
+```
+
+### 9.3. Eliminación de tablas temporales
+
+Las tablas temporales **se eliminan automáticamente** al cerrar la sesión.  
+Si necesitas eliminarlas manualmente antes de cerrar la sesión, usa:  
+
+```sql
+DROP TEMPORARY TABLE temp_clientes;
+```
+
+⚠ **Importante:**  
+Si intentas eliminar una tabla temporal con `DROP TABLE` sin `TEMPORARY`, MySQL eliminará una tabla permanente con el mismo nombre si existe.  
+
+
+### 9.4. Diferencias entre tablas temporales y tablas normales
+
+| Característica        | Tablas temporales | Tablas normales |
+|----------------------|-----------------|----------------|
+| **Alcance**         | Solo dentro de la sesión actual | Persiste hasta ser eliminada |
+| **Disponibilidad**   | Solo para el usuario que la creó | Accesible por todos los usuarios con permisos |
+| **Persistencia**     | Se elimina automáticamente al cerrar la sesión | Debe eliminarse manualmente con `DROP TABLE` |
+| **Uso recomendado**  | Datos intermedios, cálculos temporales | Datos permanentes en la aplicación |
+
+### 9.5. Casos de uso de tablas temporales
+
+✔ **Optimización de consultas complejas:** Guardar resultados parciales para reducir cálculos repetitivos.  
+✔ **Evitar bloqueos en consultas de gran volumen:** Se pueden procesar datos sin afectar las tablas principales.  
+✔ **Uso en procedimientos almacenados:** Para almacenar datos temporales durante la ejecución de un procedimiento.  
+✔ **Filtrado de datos intermedios:** Agrupar y transformar datos antes de generar reportes finales.  
