@@ -870,10 +870,11 @@ En general, debemos realizar un diseño inicial pensando en minimizar el espacio
 
   ```sql
   CREATE TABLE empleados (
-      id INT AUTO_INCREMENT PRIMARY KEY,
+      id INT AUTO_INCREMENT,
       nombre VARCHAR(100),
       departamento VARCHAR(50),
       fecha_contrato DATE NOT NULL
+      PRIMARY KEY (id, fecha_contrato)
   ) ENGINE=InnoDB
   PARTITION BY RANGE (fecha_contrato) (
       PARTITION p2019 VALUES LESS THAN (2020),
@@ -883,6 +884,9 @@ En general, debemos realizar un diseño inicial pensando en minimizar el espacio
   ```
 
   - En el **particionado vertical**, se dividen las columnas de una tabla en dos o más tablas separadas. Se usa cuando algunas columnas son accedidas con más frecuencia que otras, mejorando la velocidad de consultas y reduciendo el consumo de memoria en caché
+
+  Nota :bulb: : Para hacer particionado horizontal `BY RANGE` es necesario que la columna por la que se particiona sea parte de la clave primaria. Si no es así, MySQL lanzará un error. Se pueden usar otras estrategias de particionado horizontal, como `BY HASH`. Para más información, consultar la [documentación oficial](https://dev.mysql.com/doc/refman/8.0/en/partitioning.html).
+
 - **Normalización de tablas**: La normalización consiste en dividir una tabla en varias tablas relacionadas para reducir la redundancia y mejorar la integridad de los datos. Se realiza siguiendo las formas normales (1FN, 2FN, 3FN, BCNF, etc.), dependiendo del grado de optimización necesario.
 - **Desnormalización de tablas**: la desnormalización combina varias tablas en una sola para reducir la necesidad de JOINs en consultas frecuentes. Es útil en sistemas donde la **lectura es prioritaria sobre la escritura**, como en sistemas OLAP o almacenes de datos (Data Warehouses).
 
