@@ -822,7 +822,15 @@ Cuando operamos sobre tablas que cuentan con indices (realizamos actualizaciones
     ANALYZE TABLE ventas;
     ```  
 
+##### Uso de `EXPLAIN ANALYZE`
 
+En MySQL 8.0, se introdujo la función `EXPLAIN ANALYZE`, que proporciona información más detallada sobre cómo se ejecuta una consulta.  
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM ventas WHERE fecha = '2024-01-01';
+```
+
+La salida de `EXPLAIN ANALYZE` incluye información adicional, como el tiempo de ejecución de cada operación y el número de filas procesadas. Para más información, se puede consultar la [documentación oficial de MySQL](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze).
 
 ##### Optimización con `index merge`  
 
