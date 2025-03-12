@@ -3,7 +3,9 @@
 En este repositorio encontrarás apuntes del módulo de Administración de Sistemas Gestores de Bases de Datos, del CFGS de ASIR
 
 - [**UD3 - Automatización de tareas: Construcción de guiones de administración**](./UD3_automatizacion_tareas/ud3_1_automatizacion_tareas.md)
-- [**UD4 - Optimización y monitorización**](./UD4_optimizacion_monitorizacion/ud4_1_optimizacion.md)
+- [**UD4 - Optimización y monitorización**]
+  - [Optimización](./UD4_optimizacion_monitorizacion/ud4_1_optimizacion.md)
+  - [Monitorización](./UD4_optimizacion_monitorizacion/ud4_2_monitorizacion.md)
 
 ## Licencia de uso
 
